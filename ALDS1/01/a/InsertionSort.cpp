@@ -1,4 +1,3 @@
-/*挿入ソート*/
 #include<iostream>
 #include<vector>
 using namespace std;
