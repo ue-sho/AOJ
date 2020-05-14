@@ -1,24 +1,26 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
-int main()
-{
+
+int main(){
+
     int n;
     cin >> n;
-    int a[100000];
-    rep(i, n){
+    vector<int> a(n);
+    for(int i = 0; i < n; ++i){
         cin >> a[i];
     }
+
     int q;
     cin >> q;
-    int b[100000];
-    rep(i, q){
+    vector<int> b(n);
+    for(int i = 0; i < q; ++i){
         cin >> b[i];
     }
 
     int cnt = 0;
-    rep(i, q){
-        rep(j, n){
+    for(int i = 0; i < q; ++i){
+        for(int j = 0; j < n; ++j){
             if(b[i] == a[j]){
                 cnt++;
                 break;
