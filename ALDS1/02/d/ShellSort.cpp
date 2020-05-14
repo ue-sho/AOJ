@@ -24,15 +24,14 @@ int insertion_sort(vector<int>& a, const int n, const int dis){
 
 int shell_sort(vector<int>& a, const int n, vector<int>& distance){
     
-    // {1, 4, 7, ....} と n を超えるまで格納する
-    for(int i = 1; i <= n; i = 3*i + 1){
+    // {1, 4, 13, 40, ...} と n を超えるまで格納する
+    for(int i = 1; i <= n; i = 3 * i + 1){
         distance.push_back(i);
     }
-    reverse(distance.begin(), distance.end());
     
     int cnt = 0;
     // だんだん交換の距離を狭めていく
-    for(int i = 0; i < distance.size(); i++){
+    for(int i = distance.size()-1; i >= 0; --i){
         cnt += insertion_sort(a, n, distance[i]);
     }
     return cnt;
