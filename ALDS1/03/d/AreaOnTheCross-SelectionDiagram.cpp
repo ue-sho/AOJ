@@ -12,7 +12,6 @@ int calc_area(const vector<int>& height, const int first, const int last){
 }
 
 int main() {
-
 	
     vector<char> shape;
     char c;

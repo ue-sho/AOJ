@@ -1,7 +1,3 @@
-/*安定なソート
-    バブルソートは安定
-    選択ソートは不安定
-*/
 #include<iostream>
 #include<vector>
 using namespace std;
@@ -60,8 +56,8 @@ void selection_sort(vector<Card>& c, const int n){
     }
 }
 
-int main()
-{
+int main(){
+
     int n;
     cin >> n;
     vector<Card> bubble;
@@ -70,6 +66,8 @@ int main()
     }
     vector<Card> insertion = bubble;
 
+    // バブルソートは安定
+    // 選択ソートは不安定
     bubble_sort(bubble, n);
     print_array(insertion, n);
     cout << "Stable" << endl;

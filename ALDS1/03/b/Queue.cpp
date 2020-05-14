@@ -2,8 +2,8 @@
 #include<queue>
 using namespace std;
 
-int main()
-{
+int main(){
+    
     int n, t;
     cin >> n >> t;
 

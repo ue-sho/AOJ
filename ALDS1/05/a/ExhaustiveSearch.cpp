@@ -3,7 +3,6 @@
 using namespace std;
 
 /*** 再帰・分割統括法 ***/
-// O( )
 bool exhaustive_search(const int idx, const int key, const vector<int>& a, const int size){
     
     if(key == 0){ // 求める値になったら終わり(成功)
