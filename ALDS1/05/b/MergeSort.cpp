@@ -16,8 +16,7 @@ int merge(vector<int>& A, const int left, const int mid, const int right){
         R[i] = A[mid + i];
     }
 
-    L[n1] = INT_MAX;    //番兵
-    R[n2] = INT_MAX;    //番兵
+    L[n1] = R[n2] = INT_MAX;    //番兵
     
     int i = 0, j = 0, cnt = 0;
     for(int k = left; k < right; ++k){
