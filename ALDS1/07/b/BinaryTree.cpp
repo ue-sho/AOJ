@@ -1,121 +1,114 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
-typedef long long ll;
 
-#define MAX 25
-#define NIL -1
+constexpr int NIL = -1;
 
 struct Node {
     int parent;
-    int left;
-    int right;
-} info[MAX];
+    int left;   //一番左の子を入れる　NIL(-1)なら子がいない
+    int right;  //再帰的に子を入れる
+};
 
+void print_tree(const vector<Node>& info, const vector<int>& depth, const vector<int>& height, const int n){
 
-int depth[MAX];
-int height[MAX];
+    for(int node = 0; node < n; ++node){
+        cout << "node " << node;
+        cout << ": parent = " << info[node].parent;
+        
+        cout << ", sibling = ";
+        if(info[node].parent == NIL){
+            cout << -1;
+        }
+        else if(info[info[node].parent].left == node){
+            cout << info[info[node].parent].right;
+        }
+        else if(info[info[node].parent].right == node){
+            cout << info[info[node].parent].left;
+        }
+        
+        cout << ", degree = ";
+        int deg = 0;
+        if(info[node].left != NIL){
+            deg++;
+        }
+        if(info[node].right != NIL){
+            deg++;
+        }
+        cout << deg;
+        
+        cout << ", depth = " << depth[node];
+        cout << ", height = " << height[node] << ", ";
 
-void print(int node){
-
-    cout << "node " << node;
-    cout << ": parent = " << info[node].parent;
-    
-    cout << ", sibling = ";
-    if(info[node].parent == NIL){
-        cout << -1;
+        if(info[node].parent == NIL){
+            cout << "root" << endl;
+        }
+        else if(info[node].left == NIL && info[node].right == NIL){
+            cout << "leaf" << endl;
+        }
+        else{
+            cout << "internal node" << endl;
+        }
     }
-    else if(info[info[node].parent].left == node){
-        cout << info[info[node].parent].right;
-    }
-    else if(info[info[node].parent].right == node){
-        cout << info[info[node].parent].left;
-    }
-
-    
-    cout << ", degree = ";
-    int deg = 0;
-    if(info[node].left != NIL){
-        deg++;
-    }
-    if(info[node].right != NIL){
-        deg++;
-    }
-    cout << deg;
-    
-    cout << ", depth = " << depth[node];
-    cout << ", height = " << height[node] << ", ";
-
-    if(info[node].parent == NIL){
-        cout << "root";
-    }
-    else if(info[node].left == NIL && info[node].right == NIL){
-        cout << "leaf";
-    }
-    else{
-        cout << "internal node";
-    }
-
-    cout << "\n";
 }
 
-void setDepth(int node, int dep){
+void set_depth(int node, int dep, const vector<Node>& info, vector<int>& depth){
     depth[node] = dep;
     if(info[node].right != NIL){
-        setDepth(info[node].right, dep+1);
+        set_depth(info[node].right, dep + 1, info, depth);
     }
     if(info[node].left != NIL){
-        setDepth(info[node].left, dep+1);
+        set_depth(info[node].left, dep + 1, info, depth);
     }
 }
 
-/*ここ分からなかった*/
-int setHeight(int node){
+int set_height(int node, const vector<Node>& info, vector<int>& height){
     int h1 = 0, h2 = 0;
     if(info[node].left != NIL){
-        h1 = setHeight(info[node].left) + 1;
+        h1 = set_height(info[node].left, info, height) + 1;
     }
     if(info[node].right != NIL){
-        h2 = setHeight(info[node].right) + 1;
+        h2 = set_height(info[node].right, info, height) + 1;
     }
-
     return height[node] = max(h1, h2);
 }
+
 
 int main() {
 
     int n;
     cin >> n;
-    rep(i, n){ //初期化
-        info[i].parent = NIL;
-    }
+    
+    vector<Node> info(n, {NIL, NIL, NIL});  // NILで初期化
 
-    int node, left, right;
-    rep(i, n){
+    for(int i = 0; i < n; ++i){
+        int node, left, right;
         cin >> node >> left >> right;
         info[node].left = left;
-        info[node].right = right;
         if(left != NIL){
             info[left].parent = node;
         }
+        info[node].right = right;
         if(right != NIL){
             info[right].parent = node;
         }
     }
 
-    int root;
-    rep(i, n){
+    // 親を見つける
+    int parent = 0;
+    for(int i = 0; i < n; ++i){
         if(info[i].parent == NIL){
-            root = i;
+            parent = i;
         }
     }
 
-    setDepth(root, 0);
-    setHeight(root);
+    vector<int> depth(n);
+    set_depth(parent, 0, info, depth);
 
-    rep(i, n){
-        print(i);
-    }
+    vector<int> height(n);
+    set_height(parent, info, height);
+
+    print_tree(info, depth, height, n);
 
     return 0;
 }

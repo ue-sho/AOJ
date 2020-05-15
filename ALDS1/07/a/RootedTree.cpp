@@ -1,59 +1,90 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
-struct Edge{
+constexpr int NIL = -1;
+
+struct Node {
     int parent;
-    int depth;
+    int left;   //一番左の子を入れる　NIL(-1)なら子がいない
+    int right;  //再帰的に子を入れる
 };
+
+void print_tree(const vector<Node>& info, const vector<int>& depth, const int n){
+
+    for(int node = 0; node < n; ++node){
+        cout << "node " << node;
+        cout << ": parent = " << info[node].parent; 
+        cout  << ", depth = " << depth[node] << ", ";
+        
+        if(info[node].parent == NIL){
+            cout << "root, ";
+        }
+        else if(info[node].left == NIL){
+            cout << "leaf, ";
+        }
+        else{
+            cout << "internal node, ";
+        }
+
+        cout << "[";
+        for(int i=0, child=info[node].left; child!=NIL; i++, child=info[child].right){
+            if(i){
+                cout << ", ";
+            }
+            cout << child;
+        }
+        cout << "]" << endl;
+    }
+}
+
+void set_depth(int node, int dep, const vector<Node>& info, vector<int>& depth){
+    depth[node] = dep;
+    if(info[node].right != NIL){    //右は全部同じ深さ
+        set_depth(info[node].right, dep, info, depth);
+    }
+    if(info[node].left != NIL){     //左は深くなる
+        set_depth(info[node].left, dep + 1, info, depth);
+    }
+}
 
 int main() {
 
     int n;
     cin >> n;
-    vector<vector<int>> v(n);
-    vector<Edge> info(n);
-    rep(i, n){
-        int id, m;
-        cin >> id >> m;
-        rep(j, m){
-            int x;
-            cin >> x;
-            v[id].push_back(x);
-            info[x] = (Edge){id, info[id].depth + 1};
-            rep(k, v[x].size()){
-                info[v[x][k]].depth = info[x].depth + 1;
-            }
-        }
-    }
+    
+    vector<Node> info(n, {NIL, NIL, NIL});  // 全てNILで初期化
 
-    rep(i, n){
-        string s;
-        if(info[i].parent == 0 && info[i].depth == 0){
-            s = "root, [";
-            info[i].parent = -1;
-        }
-        else if(v[i].size() == 0){
-            s = "leaf, [";
-        }
-        else{
-            s = "internal node, [";
-        }
-
-        cout << "node " << i << ": parent = " << info[i].parent 
-            << ", depth = " << info[i].depth << ", " << s;
-
-        if(v[i].size() == 0){
-            cout << "]\n";
-        }
-        rep(j, v[i].size()){
-            if(j != v[i].size()-1){
-                cout << v[i][j] << ", ";
+    for(int i = 0; i < n; ++i){
+        int node, child_num, recursion;
+        cin >> node >> child_num;
+        for(int j = 0; j < child_num; ++j){
+            int child;
+            cin >> child;
+            // 再帰的に子をいれていく
+            if(j == 0){
+                info[node].left = child;
             }
             else{
-                cout << v[i][j] << "]" << endl;
+                info[recursion].right = child;
             }
+            recursion = child;
+            info[child].parent = node;
         }
     }
+
+    // 親を見つける
+    int parent = 0;
+    for(int i = 0; i < n; ++i){
+        if(info[i].parent == NIL){
+            parent = i;
+        }
+    }
+
+    vector<int> depth(n);
+    set_depth(parent, 0, info, depth);
+
+    print_tree(info, depth, n);
+
     return 0;
 }

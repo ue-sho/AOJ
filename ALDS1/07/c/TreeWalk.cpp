@@ -1,44 +1,42 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
-typedef long long ll;
 
-#define MAX 25
-#define NIL -1
+constexpr int NIL = -1;
 
 struct Node{
     int parent;
     int left;
     int right;
-} info[MAX];
+};
 
-/*先行順巡回*/
-void Preorder(int node){
+/* 先行順巡回 */
+void preorder(const int node, const vector<Node>& info){
     if(node == NIL){
         return;
     }
     cout << " " << node;
-    Preorder(info[node].left);
-    Preorder(info[node].right);
+    preorder(info[node].left, info);
+    preorder(info[node].right, info);
 }
 
-/*中間順巡回*/
-void Inorder(int node){
+/* 中間順巡回 */
+void inorder(const int node, const vector<Node>& info){
     if(node == NIL){
         return;
     }
-    Inorder(info[node].left);
+    inorder(info[node].left, info);
     cout << " " << node;
-    Inorder(info[node].right);
+    inorder(info[node].right, info);
 }
 
-/*後行順巡回*/
-void Postorder(int node){
+/* 後行順巡回 */
+void postorder(const int node, const vector<Node>& info){
     if(node == NIL){
         return;
     }
-    Postorder(info[node].left);
-    Postorder(info[node].right);
+    postorder(info[node].left, info);
+    postorder(info[node].right, info);
     cout << " " << node;
 }
 
@@ -46,39 +44,40 @@ int main() {
 
     int n;
     cin >> n;
-    rep(i, n){ //初期化
-        info[i].parent = NIL;
-    }
+    vector<Node> info(n, {NIL, NIL, NIL});
 
-    int id, left, right;
-    rep(i, n){
-        cin >> id >> left >> right;
-        info[id].left = left;
-        info[id].right = right;
+    for(int i = 0; i < n; ++i){
+        int node, left, right;
+        cin >> node >> left >> right;
+        info[node].left = left;
         if(left != NIL){
-            info[left].parent = id;
+            info[left].parent = node;
         }
+        info[node].right = right;
         if(right != NIL){
-            info[right].parent = id;
+            info[right].parent = node;
         }
     }
 
-    int root;
-    rep(i, n){
+    // 親を見つける
+    int parent = 0;
+    for(int i = 0; i < n; ++i){
         if(info[i].parent == NIL){
-            root = i;
+            parent = i;
         }
     }
 
     cout << "Preorder" << endl;
-    Preorder(root);
-    cout << "\n";
+    preorder(parent, info);
+    cout << endl;
+
     cout << "Inorder" << endl;
-    Inorder(root);
-    cout << "\n";
+    inorder(parent, info);
+    cout << endl;
+    
     cout << "Postorder" << endl;
-    Postorder(root);
-    cout << "\n";
+    postorder(parent, info);
+    cout << endl;
 
     return 0;
 }
