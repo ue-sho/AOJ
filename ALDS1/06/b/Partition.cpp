@@ -1,38 +1,30 @@
-/*** パーテーション ***/
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
-int partition(int A[], int p, int r){
-    int x = A[r];
-    int i  = p-1;
-    for(int j = p; j < r; j++){
+int partition(vector<int>& A, const int begin, const int end){
+    int x = A[end];         // 基準
+    int idx  = begin - 1;   // 基準に対しての大小の境となる場所 
+    for(int j = begin; j <= end; j++){
         if(A[j] <= x){
-            i++;
-            int tmp = A[i];
-            A[i] = A[j];
-            A[j] = tmp;
+            swap(A[++idx], A[j]);
         }
     }
-    int tmp = A[i+1];
-    A[i+1] = A[r];
-    A[r] = tmp;
-
-    return i+1;
+    return idx;
 }
 
-int main()
-{
+int main(){
+
     int n;
     cin >> n;
-    int a[100000];
-    rep(i, n){
+    vector<int> a(n);
+    for(int i = 0; i < n; ++i){
         cin >> a[i];
     }
 
     int p = partition(a, 0, n-1);
 
-    rep(i, n){
+    for(int i = 0; i < n; ++i){
         if(p == i){
             cout << "[" << a[i] << "] ";
         }
