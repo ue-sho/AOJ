@@ -1,6 +1,5 @@
-#include <bits/stdc++.h>
+#include<iostream>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
 struct Node {
     int key;
@@ -44,7 +43,6 @@ void insert_tree(int num){
 }
 
 Node *find_node(int num){
-    
     Node *find = root;
 
     while (find != NIL){
@@ -63,7 +61,6 @@ Node *find_node(int num){
 
 Node *getNextNode(Node *node){
     /*** 中間順巡回での次節点 ***/
-
     if(node->right != NIL){
         Node *ret = node->right;
         while (ret->left != NIL){
@@ -81,7 +78,6 @@ Node *getNextNode(Node *node){
 }
 
 void delete_node(Node *key){
-
     Node *del;
     Node *chil;
 
@@ -126,7 +122,6 @@ void delete_node(Node *key){
 }
 
 void inorder(Node *node){
-
     if(node == NIL){
         return;
     }
@@ -136,7 +131,6 @@ void inorder(Node *node){
 }
 
 void preorder(Node *node){
-
     if(node == NIL){
         return;
     }
@@ -150,9 +144,9 @@ int main() {
     int n;
     cin >> n;
 
-    string command;
-    int num;
-    rep(i, n){
+    for(int i = 0; i < n; ++i){
+        string command;
+        int num;
         cin >> command;
         if(command == "insert"){
             cin >> num;

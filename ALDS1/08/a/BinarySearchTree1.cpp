@@ -1,6 +1,5 @@
-#include <bits/stdc++.h>
+#include<iostream>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
 struct Node {
     int key;
@@ -44,7 +43,6 @@ void insert_tree(int num){
 }
 
 void inorder(Node *node){
-
     if(node == NIL){
         return;
     }
@@ -54,7 +52,6 @@ void inorder(Node *node){
 }
 
 void preorder(Node *node){
-
     if(node == NIL){
         return;
     }
@@ -68,8 +65,8 @@ int main() {
     int n;
     cin >> n;
 
-    string command;
-    rep(i, n){
+    for(int i = 0; i < n; ++i){
+        string command;
         cin >> command;
         if(command == "insert"){
             int num;

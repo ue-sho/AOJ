@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
 struct Node {
     int key;
@@ -87,9 +86,9 @@ int main() {
     int n;
     cin >> n;
 
-    string command;
-    int num;
-    rep(i, n){
+    for(int i = 0; i < n; ++i){
+        string command;
+        int num;
         cin >> command;
         if(command == "insert"){
             cin >> num;
