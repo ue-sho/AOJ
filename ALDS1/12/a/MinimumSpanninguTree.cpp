@@ -1,65 +1,54 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<queue>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
-#define NIL -1
-#define WHITE 0
-#define GRAY 1
-#define BLACK 2
-#define INF 1 << 21
+struct edge{
+    int to;
+    int cost;
+};
 
-//プリムのアルゴリズム
-int prim(vector<vector<int> > &graph, int n){
-
-    vector<int> parent(n, NIL);
-    vector<int> cost(n, INF);
-    vector<int> color(n, WHITE);
-
-    cost[0] = 0;
-    while(1){
-        int minv = INF;
-        int u = NIL;    //現在地
-        rep(i, n){
-            if(cost[i] < minv && color[i] != BLACK){
-                minv = cost[i];
-                u = i;
-            }
+int prim(vector<vector<edge>>& edges, int V) {
+    int res = 0;
+    using P = pair<int, int>;
+    vector<bool> used(V, false);
+    // P -> first : コスト, second : 行先
+    priority_queue<P, vector<P>, greater<P>> que;
+    que.emplace(0, 0);
+    // コストが小さい順に出しいく
+    while (!que.empty()) {
+        P p = que.top();
+        que.pop();
+        if(used[p.second]){
+            continue;
         }
-        if(u == NIL) break;
-
-        color[u] = BLACK;
-        rep(j, n){
-            if(color[j] != BLACK && graph[u][j] != NIL){
-                if(cost[j] > graph[u][j]){
-                    cost[j] = graph[u][j];
-                    parent[j] = u;
-                    color[j] = GRAY;
-                }
+        used[p.second] = true;
+        res += p.first;
+        for(const auto e : edges[p.second]){
+            if(!used[e.to]){
+                que.emplace(e.cost, e.to);
             }
         }
     }
-
-    int sum = 0;
-    rep(i, n){
-        if(parent[i] != NIL){
-            sum += graph[i][parent[i]];
-        }
-    }
-    return sum;
+    return res;
 }
 
 int main() {
 
     int n;
     cin >> n;
-    vector<vector<int> > graph(n, vector<int>(n));
-    rep(i, n){
-        rep(j, n){
-            cin >> graph[i][j];
+    vector<vector<edge>> edges(n);
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < n; ++j){
+            int a;
+            cin >> a;
+            if(a != -1){
+                edges[i].emplace_back((edge){j, a});
+            }
         }
     }
 
-    cout << prim(graph, n) << endl;
+    cout << prim(edges, n) << endl;
 
     return 0;
 } 
