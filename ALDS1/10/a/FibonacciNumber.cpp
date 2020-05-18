@@ -1,16 +1,25 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
-int f[45];
-
-void FibonacciInit(){
-
-    f[0] = 1;
-    f[1] = 1;
-    for(int i=2; i<=44; i++){
-        f[i] = f[i-1] + f[i-2];
+// 動的計画法
+void fibonacci_init(vector<int>& fib, const int n){
+    fib[0] = 1;
+    fib[1] = 1;
+    for(int i = 2; i <= n; i++){
+        fib[i] = fib[i-1] + fib[i-2];
     }
+}
+
+// メモ化再帰
+int fibonacci(vector<int>& fib, int n){
+    if(n == 0 || n == 1){
+        return fib[n] = 1;
+    }
+    if(fib[n] != 0){
+        return fib[n];
+    }
+    return fib[n] = fibonacci(fib, n - 2) + fibonacci(fib, n - 1);
 }
 
 int main() {
@@ -18,9 +27,12 @@ int main() {
     int n;
     cin >> n;
 
-    FibonacciInit();
+    vector<int> fib(n+1);
 
-    cout << f[n] << endl;
+    fibonacci_init(fib, n);
+    cout << fib[n] << endl;
+
+    //cout << fibonacci(fib, n) << endl;  // メモ化再帰ver
 
     return 0;
 }

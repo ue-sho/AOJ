@@ -1,33 +1,34 @@
-/*   分かっていない   */
- 
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<climits>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
-#define MAX 100
+
+constexpr int MAX = 100;
+
 int main() {
 
     int n;
     cin >> n;
-    int p[MAX+1], m[MAX+1][MAX+1];
-    for(int i=1; i<=n; i++){
-        cin >> p[i-1] >> p[i];
+    vector<int> element(n + 1); 
+    // Matrix_i が element[i-1] element[i] の行列となる
+    for(int i = 1; i <= n; ++i){
+        cin >> element[i-1] >> element[i];
     }
 
-    for(int i=1; i<=n; i++){
-        m[i][i] = 0;    //初期化
-    }
-
-    for(int l=2; l<=n; l++){
-        for(int i=1; i<=n-l+1; i++){
+    vector<vector<int>> dp(MAX + 1, vector<int>(MAX + 1));
+    for(int l = 2; l <= n; ++l){    // 行列の数 |i - j|
+        for(int i = 1; i <= n-l+1; ++i){    
+            // Matrix_i から Matrix_j の連鎖行列積
             int j = i + l - 1;
-            m[i][j] = INT_MAX;     //INFいれる
-            for(int k=i; k<=j-1; k++){
-                m[i][j] = min(m[i][j], ( m[i][k] + m[k+1][j] + p[i-1]*p[k]*p[j] ) );
+            dp[i][j] = INT_MAX;
+            for(int k = i; k <= j-1; k++){  // 最小を探して記録
+                int chain_matrix = dp[i][k] + dp[k+1][j] + element[i-1] * element[k] * element[j];
+                dp[i][j] = min(dp[i][j], chain_matrix);
             }
         }
     }
-
-    cout << m[1][n] << endl;
+    // Matrix_1 ~ Matrix_n の最小値を出力
+    cout << dp[1][n] << endl;
    
     return 0;
 }
