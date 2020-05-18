@@ -1,62 +1,61 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
-#define MAX 100000
-#define NIL -1
-
-void dfs(int start_point, int id, vector<int> *graph, int *color, int n){
+class UnionFind {
+public:
+    vector<int> d;
     
-    stack<int> S;
-    S.push(start_point);
-    color[start_point] = id;
+    UnionFind(int n = 0) : d(n, -1) {}
 
-    while(!S.empty()){
-        int node = S.top(); S.pop();
-        rep(i, graph[node].size()){
-            int v = graph[node][i];
-            if(color[v] == NIL){
-                color[v] = id;
-                S.push(v);
-            }
+    int find(int x) {
+        if(d[x] < 0){
+            return x;
         }
+        return d[x] = find(d[x]); // メモ化再帰
     }
-}
-
-void assignColor(vector<int> *graph, int *color, int n){
-    int id = 1;
-    rep(i, n){
-        if(color[i] == NIL){
-            dfs(i, id++, graph, color, n);
+    
+    bool unite(int x, int y) {
+        x = find(x); 
+        y = find(y);
+        if(x == y){
+            return false;
         }
+        if(size(x) < size(y)){
+            swap(x,y);
+        } 
+        d[x] += d[y];
+        d[y] = x;
+        return true;
     }
-}
+    
+    bool same(int x, int y) { 
+        return find(x) == find(y);
+    }
+    
+    int size(int x) { 
+        return -d[find(x)];
+    }
+};
 
 int main() {
 
     int n, m;
     cin >> n >> m;
-    vector<int> graph[MAX];
-    int color[MAX];
-    rep(i, n){
-        color[i] = NIL;
-    }
 
-    rep(i, m){
+    UnionFind uf(n);
+    for(int i = 0; i < m; ++i){
         int s, t;
         cin >> s >> t;
-        graph[s].push_back(t);
-        graph[t].push_back(s);
+        uf.unite(s, t);
     }
-
-    assignColor(graph, color, n);
 
     int q;
     cin >> q;
-    rep(i, q){
+    for(int i = 0; i < q; ++i){
         int x, y;
         cin >> x >> y;
-        if(color[x] == color[y]){
+        if(uf.same(x, y)){
             cout << "yes" << endl;
         }
         else{

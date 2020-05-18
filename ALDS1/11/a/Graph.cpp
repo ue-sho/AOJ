@@ -1,33 +1,30 @@
-#include <bits/stdc++.h>
+#include<iostream>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
+
 int main() {
 
     int n;
     cin >> n;
-    int mat[100][100] = {};
-    rep(i, n){
+    constexpr int MAX = 100;
+    int mat[MAX][MAX] = {};
+    for(int i = 0; i < n; ++i){
         int k, l;
         cin >> k >> l;
-        rep(j, l){
+        for(int j = 0; j < l; ++j){
             int v;
             cin >> v;
             mat[k-1][v-1] = 1;
         }
     }
 
-    rep(i, n){
-        rep(j, n){
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j < n; ++j){
+            if(j){
+                cout << " ";
+            }
             cout << mat[i][j];
-            if(j == n-1){
-                cout << "\n";
-            }
-            else{
-                cout << ' ';
-            }
         }
+        cout << endl;
     }
-
-
     return 0;
 }

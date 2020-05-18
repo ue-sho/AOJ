@@ -1,59 +1,50 @@
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
 using namespace std;
-#define rep(i, n) for(int i=0; i<(n); i++)
 
-#define N 100
-#define WHITE 0
-#define GRAY 1
-#define BLACK 2
-
-int matrix[N][N] = {};
-int color[N] = {};
-int start[N], completed[N], now = 0;
-
-void dfs_visit(int unfixed, int n){
-    
-    color[unfixed] = GRAY;
-    start[unfixed] = ++now;
-
-    rep(i, n){
-        if(matrix[unfixed][i] == 0){
-            continue;
+// 深さ優先探索
+void dfs(const int node, const vector<vector<int>>& graph, 
+            vector<pair<int, int>>& time, vector<int>& discover){
+    static int cnt = 1;
+    discover[node] = true;
+    time[node].first = cnt++; //発見
+    for(auto next : graph[node]){
+        if(discover[next]){
+            continue;   // 前回(親)と同じだったら次へ
         }
-        if(color[i] == WHITE){
-            dfs_visit(i, n);
-        }
-}
-    color[unfixed] = BLACK;
-    completed[unfixed] = ++now;
-}
-
-void dfs(int n){
-    rep(i, n){
-        if(color[i] == WHITE){
-            dfs_visit(i, n);
-        }
+        dfs(next, graph, time, discover);
     }
-    rep(i, n){
-        cout << i+1 << " " << start[i] << " " << completed[i] << endl;
-    }
+    time[node].second = cnt++; // 完了
 }
 
 int main() {
 
     int n;
     cin >> n;
-    rep(i, n){
+    vector<vector<int>> graph(n);
+    for(int i = 0; i < n; ++i){
         int k, l;
         cin >> k >> l;
-        rep(j, l){
+        for(int j = 0; j < l; ++j){
             int v;
             cin >> v;
-            matrix[k-1][v-1] = 1;
+            graph[k-1].push_back(v-1);
         }
     }
 
-    dfs(n);
+    // first : 発見時刻, second : 完了時刻
+    vector<pair<int, int>> time(n);
+    vector<int> discover(n);   // 発見されているかどうか
+    for(int i = 0; i < n; ++i){
+        if(discover[i]){
+            continue;
+        }
+        dfs(i, graph, time, discover);
+    }
+
+    for(int i = 0; i < n; ++i){
+        cout << i + 1 << " " << time[i].first << " " << time[i].second << endl;
+    }
 
     return 0;
 }
