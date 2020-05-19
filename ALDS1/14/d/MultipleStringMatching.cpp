@@ -6,14 +6,16 @@ using namespace std;
 
 class SuffixArray{
     string s;
-    vector<int> sa, rev;
+    vector<int> sort_idx, rev;
 public:
+    // 接尾辞配列を作る
     SuffixArray(const string &str) : s(str) {
         int n = s.size();
         s.push_back('$');
-        sa.resize(n+1);
-        iota(sa.begin(), sa.end(), 0);
-        sort(sa.begin(), sa.end(),
+        sort_idx.resize(n+1);
+        iota(sort_idx.begin(), sort_idx.end(), 0);
+        // 辞書順に並び変えたときのインデックス記録
+        sort(sort_idx.begin(), sort_idx.end(),
             [&](int a,int b){
                 if(s[a] == s[b]){
                     return a > b;
@@ -26,60 +28,61 @@ public:
         }
         for(int len = 1; len <= n; len *= 2){
             for(int i = 0; i <= n; ++i){
-                c[sa[i]] = i;
-                if(i > 0 && r[sa[i-1]] ==r[sa[i]] 
-                    && sa[i-1] + len <= n 
-                    && r[sa[i-1]+len/2] == r[sa[i]+len/2]){
+                c[sort_idx[i]] = i;
+                if(i > 0 && r[sort_idx[i-1]] ==r[sort_idx[i]] 
+                    && sort_idx[i-1] + len <= n 
+                    && r[sort_idx[i-1]+len/2] == r[sort_idx[i]+len/2]){
                     
-                    c[sa[i]]=c[sa[i-1]];
+                    c[sort_idx[i]]=c[sort_idx[i-1]];
                 }
             }
             iota(cnt.begin(), cnt.end(), 0);
-            copy(sa.begin(), sa.end(), r.begin());
+            copy(sort_idx.begin(), sort_idx.end(), r.begin());
             for(int i = 0; i <= n; ++i){
                 int s1 = r[i] - len;
                 if(s1 >= 0){
-                    sa[cnt[c[s1]]++]=s1;
+                    sort_idx[cnt[c[s1]]++]=s1;
                 }
             }
             c.swap(r);
         }
         rev.resize(n+1);
         for(int i = 0; i <= n; ++i){
-            rev[sa[i]] = i;
+            rev[sort_idx[i]] = i;
         }
     }
 
-    int operator[](int i) const { return sa[i]; }
+    int operator[](int i) const { return sort_idx[i]; }
 
-    bool lt_substr(string &t,int si,int ti){
-        int sn = s.size();
-        int tn = t.size();
-        while(si < sn && ti < tn){
-            if(s[si] < t[ti]){
-                return 1;
+    // s の中に t があるかどうか
+    bool find(string &t, int s_idx, int t_idx){
+        int s_len = s.size();
+        int t_len = t.size();
+        while(s_idx < s_len && t_idx < t_len){
+            if(s[s_idx] < t[t_idx]){
+                return true;
             }
-            if(s[si]>t[ti]){
-                return 0;
+            if(s[s_idx] > t[t_idx]){
+                return false;
             }
-            si++; ti++;
+            s_idx++; t_idx++;
         }
-        return si == sn && ti < tn;
+        return s_idx == s_len && t_idx < t_len;
     }
 
     int lower_bound(string& t){
-        int l = 0;
-        int r = s.size();
-        while(l+1 < r){
-            int m = (l + r) >> 1;
-            if(lt_substr(t, sa[m], 0)){
-                l = m;
+        int left = 0;
+        int right = s.size();
+        while(left+1 < right){
+            int mid = (left + right) >> 1;
+            if(find(t, sort_idx[mid], 0)){
+                left = mid;
             }
             else{
-                r = m;
+                right = mid;
             }
         }
-        return r;
+        return right;
     }
 
     int upper_bound(string& t){
@@ -101,11 +104,11 @@ int main(){
     int q;
     cin >> t >> q;
     
-    SuffixArray sa(t);
+    SuffixArray sort_idx(t);
     for(int i = 0; i < q; ++i){
         string p;
         cin >> p;
-        if(sa.count(p) > 0){
+        if(sort_idx.count(p) > 0){
             cout << 1 << endl;
         }
         else{
