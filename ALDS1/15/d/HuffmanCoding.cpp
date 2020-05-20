@@ -1,39 +1,68 @@
 #include<iostream>
-#include<vector>
 #include<queue>
+#include<set>
+#include<string>
+
 using namespace std;
+
+vector<int> bfs(int root, const vector<vector<int>>& graph){
+    queue<int> que;
+    vector<int> distance(52);
+    que.push(root);
+    distance[root] = 0;
+    while(!que.empty()){
+        int parent = que.front(); que.pop();
+        for(const auto child : graph[parent]){
+            distance[child] = distance[parent] + 1;
+            que.push(child);
+        }
+    }
+    return distance;
+}
 
 int main(){
     
-    string s;
-    cin>>s;
+    string s; 
+    cin >> s;
 
-    if(s == string(s.size(), s[0])){
+    set<char> st;
+    vector<int> cnt(26);
+    for(const char c : s) {
+        cnt[c-'a']++;
+        st.insert(c);
+    }
+
+    if(st.size() == 1){
         // すべて同じ文字なら長さを出力
-        cout<< s.size() <<endl;
+        cout << s.size() << endl;
         return 0;
     }
 
-    vector<int> cnt(26);
-    for(char c : s){
-        cnt[c-'a']++;
+    using P = pair<int, int>;
+    int id = 0;
+    vector<int> mark(26);   // 出現した文字の目印
+    priority_queue<P, vector<P>, greater<P>> pq;
+    for(const char c : st){
+        mark[c-'a'] = id;
+        pq.emplace(cnt[c-'a'], id++);
+    }
+
+    // 全部違う文字だった場合 -> MAX 2 * 26
+    vector<vector<int>> graph(52);  
+    while(pq.size() > 1){
+        P x = pq.top(); pq.pop();
+        P y = pq.top(); pq.pop();
+        pq.push(make_pair(x.first + y.first, id));
+        graph[id].push_back(x.second);
+        graph[id].push_back(y.second);
+        id++;
     }
     
-    priority_queue<int, vector<int>, greater<int>> pq;
-    for(int i = 0; i < 26; ++i){
-        if(cnt[i] > 0){
-            pq.emplace(cnt[i]);
-        }
-    }
+    vector<int> distance = bfs(id-1, graph);
 
     int ans = 0;
-    while(pq.size() > 1){
-        int x = pq.top(); pq.pop();
-        int y = pq.top(); pq.pop();
-        ans += x + y;
-        pq.emplace(x + y);
+    for(int i = 0; i < s.length(); ++i){
+        ans += distance[mark[s[i]-'a']];
     }
     cout << ans << endl;
-
-    return 0;
 }
