@@ -5,7 +5,7 @@ using namespace std;
 constexpr int N = 4, N_2D = 16;
 constexpr int MAX_LIMIT = 45;
 
-struct Pazzle{
+struct Puzzule{
     int location[N_2D];
     int space;
     int MD; // マンハッタン距離の総距離
@@ -15,13 +15,13 @@ struct Pazzle{
  *  マンハッタン距離の計算
  *  (上下左右だけの移動の総距離)
  */ 
-int calc_all_MD(const Pazzle& pazzle, const vector<vector<int>>& manhattan_distanc){
+int calc_all_MD(const Puzzule& puzzule, const vector<vector<int>>& manhattan_distanc){
     int res = 0;
     for(int i = 0; i < N_2D; ++i){
-        if(pazzle.location[i] == N_2D){
+        if(puzzule.location[i] == N_2D){
             continue;
         }
-        res += manhattan_distanc[i][pazzle.location[i]-1];
+        res += manhattan_distanc[i][puzzule.location[i]-1];
     }
     return res;
 }
@@ -30,7 +30,7 @@ int calc_all_MD(const Pazzle& pazzle, const vector<vector<int>>& manhattan_dista
  *  深さ優先探索
  */ 
 bool dfs(const int depth, vector<vector<int>>& manhattan_distanc, 
-            Pazzle& state, const int limit, int& ans, const int prev = -50){
+            Puzzule& state, const int limit, int& ans, const int prev = -50){
 
     if(state.MD == 0){
         ans = depth;    // 一致したら終わり
@@ -58,7 +58,7 @@ bool dfs(const int depth, vector<vector<int>>& manhattan_distanc,
             continue;   // 隣じゃなかったら
         }
 
-        Pazzle tmp = state;
+        Puzzule tmp = state;
         state.MD -= manhattan_distanc[tx*N+ty][state.location[tx*N+ty]-1];
         state.MD += manhattan_distanc[sx*N+sy][state.location[tx*N+ty]-1];
         // spaceの位置を移動
@@ -76,13 +76,13 @@ bool dfs(const int depth, vector<vector<int>>& manhattan_distanc,
 /**
  *  反復深化
  */ 
-void iterative_deepening(Pazzle& pazzle, vector<vector<int>>& manhattan_distance){
-    pazzle.MD = calc_all_MD(pazzle, manhattan_distance);
+void iterative_deepening(Puzzule& puzzule, vector<vector<int>>& manhattan_distance){
+    puzzule.MD = calc_all_MD(puzzule, manhattan_distance);
     
     int ans = 0;
-    Pazzle state;
-    for(int limit = pazzle.MD; limit <= MAX_LIMIT; ++limit){
-        state = pazzle;
+    Puzzule state;
+    for(int limit = puzzule.MD; limit <= MAX_LIMIT; ++limit){
+        state = puzzule;
         if(dfs(0, manhattan_distance, state, limit, ans)){
             cout << ans << endl;
             return;
@@ -99,16 +99,16 @@ int main(){
         }
     }
 
-    Pazzle pazzle;
+    Puzzule puzzule;
     for (int i = 0; i < N_2D; ++i){
-        cin >> pazzle.location[i];
-        if (pazzle.location[i] == 0){
-            pazzle.location[i] = N_2D;
-            pazzle.space = i;
+        cin >> puzzule.location[i];
+        if (puzzule.location[i] == 0){
+            puzzule.location[i] = N_2D;
+            puzzule.space = i;
         }
     }
 
-    iterative_deepening(pazzle, manhattan_distance);
+    iterative_deepening(puzzule, manhattan_distance);
 
     return 0;
 }
